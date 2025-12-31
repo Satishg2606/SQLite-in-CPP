@@ -1,0 +1,45 @@
+# String functions :
+int strcmp(str1,str2) : returns integer 0 if same , >0 if str1 > str2
+int strncmp(str1,str2,n) : compares first n letters
+
+############################################################################################
+What is typedef?
+typedef is used to create an alias (nickname) for an existing data type.
+It does not create a new data type — it just renames an existing one for easier readability
+Often used with structs, pointers, and complex types.
+Helps when working with long or complex type declarations.
+Used widely in system programming (e.g., in Linux, networking, databases).
+"typedef" is bit older now, "using" is used in modern c++.
+eg. 1 :
+typedef unsigned int uint;
+uint age = 25;   // same as unsigned int age = 25;
+
+eg. 2 :
+typedef struct {
+    int id;
+    char name[20];
+} Student;
+
+Student s1;  // no need to write 'struct' keyword
+
+eg. 3 :
+typedef int* IntPtr;
+
+IntPtr p1, p2;   // both are int* (not int)
+
+eg. 4 : (pointer to a function)
+typedef int (*MathOp)(int, int);
+
+int add(int a, int b) { return a + b; }
+
+MathOp op = add;
+cout << op(2, 3);  // Output: 5
+
+eg. 5 :
+typedef int Matrix[3][3];
+Matrix m = { {1,2,3}, {4,5,6}, {7,8,9} };
+
+
+
+
+###########################################################################################
