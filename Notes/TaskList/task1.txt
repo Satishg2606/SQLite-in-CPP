@@ -1,0 +1,9 @@
+Making a Simple REPL
+Sqlite starts a read-execute-print loop when you start it from the command line:
+For E.g :-  
+sqlite> create table users (id int, username varchar(255), email varchar(255));
+sqlite> .tables
+users
+sqlite> .exit
+
+# We need to create a REPL that takes input and if input == .exit then exit the shell. ( Basically build a shell inteface )
