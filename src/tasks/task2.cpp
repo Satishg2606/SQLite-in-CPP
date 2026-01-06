@@ -4,6 +4,7 @@
 #include<cstdlib>
 #include <string>
 #include <sstream>
+#include <stdint.h>
 // This file will handle meta-commands and statements.
 // Meta-commands will start with a dot (.) and will be handled separately.
 
@@ -17,11 +18,33 @@ typedef struct {
     size_t buffer_size;
 } InputBuffer;
 
+typedef enum {
+  META_COMMAND_SUCCESS,
+  META_COMMAND_UNRECOGNIZED_COMMAND
+} MetaCommandResult;
 
-typedef enum { STATEMENT_INSERT, STATEMENT_SELECT } StatementType;
+typedef enum {
+  PREPARE_SUCCESS,
+  PREPARE_SYNTAX_ERROR,
+  PREPARE_UNRECOGNIZED_STATEMENT
+ } PrepareResult;
 
+
+typedef enum { 
+    STATEMENT_INSERT, 
+    STATEMENT_SELECT 
+} StatementType;
+
+#define COLUMN_USERNAME_SIZE 32
+#define COLUMN_EMAIL_SIZE 255
+typedef struct {
+  uint32_t id;
+  char username[COLUMN_USERNAME_SIZE];
+  char email[COLUMN_EMAIL_SIZE];
+} Row;
 typedef struct {
   StatementType type;
+  Row row_to_insert;
 } Statement;
 
 InputBuffer* new_input_buffer(){
@@ -52,9 +75,14 @@ void getline_input(InputBuffer* IB){
     IB->input_size = line.length();
 }
 
-StatementType prepare_statement(InputBuffer* IB){
+StatementType prepare_statement(InputBuffer* IB, Statement* statement){
     if(strncmp(IB->buffer,"SELECT",6)==0){
-        return STATEMENT_SELECT;
+        statement->type=STATEMENT_INSERT;
+        int args_assigned = sscanf(IB->buffer,"insert %d %s %s",&(statement->row_to_insert.id),        statement->row_to_insert.username, statement->row_to_insert.email);
+        if(args_assigned<3){
+            throw "Parse Syntax Error";
+        }
+        return STATEMENT_INSERT;
     }
     if(strncmp(IB->buffer,"INSERT",6)==0){
         return STATEMENT_INSERT;
@@ -62,6 +90,7 @@ StatementType prepare_statement(InputBuffer* IB){
     else {
         throw "Unrecodnized Statement";
     }
+    
 }
 
 int main(){
@@ -78,8 +107,8 @@ int main(){
                     throw "Unrecognized Meta Command";
                 }
             }
-            
-            switch(prepare_statement(IB)){
+            Statement statement;
+            switch(prepare_statement(IB,&statement)){   
                 case STATEMENT_SELECT :
                     std::cout<< "Executing Select statement"<<std::endl;
                     continue;
