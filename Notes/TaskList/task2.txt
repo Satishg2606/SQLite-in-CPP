@@ -3,4 +3,4 @@ handle meta-commands and statements.. For now only Select and Insert.
 It should:
 support two operations: inserting a row and printing all rows
 reside only in memory (no persistence to disk)
-support a single, hard-coded table
+support a single, hard-coded table 
