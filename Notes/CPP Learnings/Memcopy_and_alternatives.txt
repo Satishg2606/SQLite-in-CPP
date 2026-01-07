@@ -1,0 +1,55 @@
+What is memcpy?
+memcpy is a low-level memory copy function from <cstring> that copies raw bytes from one memory location to another.
+-------------------------------------------------------
+void* memcpy(void* dest, const void* src, size_t n);
+-------------------------------------------------------
+Copies n bytes
+Type-unaware (just bytes)
+Fast, often optimized with CPU instructions
+Undefined behavior if memory overlaps
+Basic Example
+-------------------------------------------------------
+int a[3] = {1, 2, 3};
+int b[3];
+
+memcpy(b, a, sizeof(a));
+--------------------------------------------------------
+Copies the raw bytes of array a into b.
+
+### Best Use Scenarios 
+Use memcpy only for trivially copyable data:
+Primitive types (int, float, char)
+POD structs (no pointers, no constructors)
+Buffers (I/O, networking, storage)
+Serialization / deserialization of binary data
+-------------------------------------------------------
+struct Header {
+    uint32_t id;
+    uint16_t len;
+};
+
+Header h1, h2;
+memcpy(&h2, &h1, sizeof(Header)); // Safe
+-------------------------------------------------------
+When NOT to Use 
+Avoid memcpy with:  > std::string, std::vector
+Classes with constructors/destructors
+Objects owning heap memory
+Polymorphic objects
+-------------------------------------------------------
+std::string s1 = "hi", s2;
+memcpy(&s2, &s1, sizeof(std::string)); //Undefined behavior
+-------------------------------------------------------
+memcpy vs memmove
+Function    -	Overlap Safe
+memcpy	    -   No
+memmove	    -   Yes
+Use memmove if source and destination overlap.
+Safer Alternatives
+std::copy – type-safe, uses copy constructors
+Assignment (=) – safest for objects
+std::bit_cast (C++20) – safe bit-level copy for same-size types
+static_assert(std::is_trivially_copyable<T>) before memcpy
+Key Rule
+Use memcpy only for raw memory and trivially copyable types—never for C++ objects with ownership or lifetime logic.
+--------------------------------------------------------------------------------------------------------------
