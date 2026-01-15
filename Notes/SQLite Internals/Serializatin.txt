@@ -1,0 +1,46 @@
+### Topic :
+Serialize and Deserialize Data in C++ :- 
+Row in C++
+struct Row {
+    uint32_t id;
+    std::string username;
+    std::string email;
+};
+How It Looks in Memory (Bytes)
+    Let’s define a fixed layout (important!):
+    | id (4 bytes) | username (32 bytes) | email (255 bytes) |
+Total size = 291 bytes
+No pointers. No std::string internals. Just raw data.
+
+### Serialization (Object → Bytes)
+  > void serialize(const Row& row, char* destination) {
+  >  memcpy(destination, &row.id, sizeof(row.id));
+  >
+  >  memset(destination + 4, 0, 32);
+  >  memcpy(destination + 4, row.username.c_str(), row.username.size());
+  >
+  >  memset(destination + 36, 0, 255);
+  >  memcpy(destination + 36, row.email.c_str(), row.email.size());
+  > }
+
+** What’s happening
+Copy integer bytes directly
+Copy string characters
+Pad unused space with \0
+Everything ends up in one contiguous byte block
+
+### Deserialization (Bytes → Object)
+   > void deserialize(const char* source, Row& row) {
+   >     memcpy(&row.id, source, sizeof(row.id));
+   > 
+   >     row.username = std::string(source + 4, 32);
+   >     row.username.erase(row.username.find('\0'));
+   > 
+   >     row.email = std::string(source + 36, 255);
+   >     row.email.erase(row.email.find('\0'));
+   > }
+   ** What’s happening
+   Read bytes back into variables
+   Reconstruct strings
+   Trim null padding
+

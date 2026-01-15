@@ -1,1 +1,18 @@
-# No work done Today!!
+# We will Extend our Function to store Data into tables.
+# A fixed-schema table (“users”) with these columns
+# Parsing Extended Commands
+    Now the parser must detect:
+        INSERT rows with values (int, string, string)
+        SELECT rows (read all data)
+# Store table into pages (4KB).
+    Data is grouped into pages (e.g., 4 KB blocks)
+    Each page holds as many rows as fit
+    Pages allocated on first use (lazy)
+# A Table Structure
+    This includes:
+        total number of rows
+        fixed array of page pointers
+        max data supported in memory (no disk yet)
+
+
+
